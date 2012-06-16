@@ -3,6 +3,10 @@ class Youtube
   include Mongoid::Timestamps
   field :yid, :type => String
   field :state, :type => Integer
+  field :thumb, :type => String
+  field :title, :type => String
+  field :uploader, :type => String
+  field :info_saved, :tyep => Boolean, :default => false
 
   def self.get_yid url
     regex = /youtube.com.*(?:\/|v=)([^&$]+)/
@@ -11,6 +15,10 @@ class Youtube
       return nil
     end
     res[1]
+  end
+
+  def self.exists? yid
+    self.where(:yid => yid).limit(1).length >= 1 
   end
 
   def self.valid_video? url

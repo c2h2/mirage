@@ -62,10 +62,14 @@ class Mirage
     return if Rule.domain(url) != "www.youtube.com"
 
     if Youtube.valid_video?(url)
-      y=Youtube.new
-      y.yid = Youtube.get_yid(url)
-      y.state = LINK_STATE_UNPROCESSED
-      y.save
+      yid = Youtube.get_yid(url)
+      unless Youtube.exists?(yid)
+        y=Youtube.new
+        y.yid = yid
+        y.state = LINK_STATE_UNPROCESSED
+        y.info_saved = false
+        y.save
+      end
     end
 
     if Link.exists? url
