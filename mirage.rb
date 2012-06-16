@@ -2,14 +2,16 @@ require 'mongoid'
 Dir[File.dirname(__FILE__) + '/model/*.rb'].each {|file| puts "Requiring #{file}"; require file }
 require_relative 'conf/conf.rb'
 require_relative 'lib/aux.rb'
+require_relative 'conf/db.rb'
 require 'yaml'
 require 'open-uri'
-
+require 'nokogiri'
 
 class Mirage
   
   def initialize
     @cnt = 0
+    run
   end
 
   def run
@@ -19,7 +21,7 @@ class Mirage
   end
   
   def process_one_page page, org_link
-    Util.log "Getting a page #{page_port}"
+    Util.log "Getting a page #{page}"
     if !page.nil?
       urls = page.parse_page
       return if urls.nil?
@@ -96,7 +98,7 @@ class Mirage
     end
     #@page.link = link #might need to fix here as portable won't transfer
     Util.log "DL #{link.url}"
-    hash = {} #put UA here
+    hash = {"User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.34 Safari/536.11"} #put UA here
     sw=Stopwatch.new 
     
     begin
@@ -136,7 +138,7 @@ class Mirage
   end
 
   def get_a_link
-    @new_links = Link.where(:state => LINK_STATE_UNPROCESSED).limit 1
+    Link.where(:state => LINK_STATE_UNPROCESSED).limit(1).first
   end
 end
 

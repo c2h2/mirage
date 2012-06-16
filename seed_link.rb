@@ -8,3 +8,9 @@ l=Link.new
 l.url = 'http://www.youtube.com/watch?v=AgJcn4VKtp0&feature=g-all-u'
 l.state = LINK_STATE_UNPROCESSED
 l.save
+
+
+ls= Link.all
+ls.each do |l|
+  puts l.url
+end

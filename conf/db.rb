@@ -1,6 +1,11 @@
 require 'mongoid'
 
-### mongo conn ###
+#Mongoid.load!("./db.yml")
+#Moped::Session.new(["localhost:27017"])
 Mongoid.configure do |config|
-  config.master = Mongo::Connection.new.db("mirage_test00")
+  name = "asdf"
+  host = "localhost"
+  port = 27017
+  config.database = Mongo::Connection.new.db(name)
+
 end
