@@ -51,6 +51,13 @@ class Page
     Util.log "Found #{@found_links.count} links"
     @found_links
   end
+  
+  def is_youtube_link?
+    regex = /youtube.com.*(?:\/|v=)([^&$]+)/
+    youtube_id = url_1.match(regex)[1]
+
+
+  end
 end
 
 class PagePort
