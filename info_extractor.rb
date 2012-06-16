@@ -7,13 +7,15 @@ require 'open-uri'
 require 'json'
 require 'pp'
 
+HTTP_PROXY = "http_proxy=http://localhost:1095"
 JSON_DIR = 'json_info'
 loop do 
   ys = Youtube.where(:info_saved => false).limit(10)
   ys.each do |y|
     begin
       url = "http://www.youtube.com/watch?v=#{y.yid}"
-      `cd #{JSON_DIR} && ../youtube-dl/youtube-dl --skip-download --write-info-json  '#{url}'`
+      Util.log "Processing #{y.yid}"
+      `cd #{JSON_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl --skip-download --write-info-json  '#{url}'`
       json_fn = `ls #{JSON_DIR}/#{y.yid}*`.strip
       json = JSON.parse File.read(json_fn)
       y.thumb = json["thumbnail"]
@@ -28,6 +30,6 @@ loop do
       Util.log "Soemthing wrong with extraction."
     end
   end
-  Util.log "No more jobs. Sleeping"
+  Util.log "Sleeping"
   sleep 5
 end

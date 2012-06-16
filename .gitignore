@@ -7,3 +7,5 @@
 # Ignore bundler config
 .bundle
 
+# Ignore json output.
+json_info
