@@ -59,6 +59,14 @@ class Mirage
     unless Rule.ok?(url)
       #return
     end
+    return if Rule.domain(url) != "www.youtube.com"
+
+    if Youtube.valid_video?(url)
+      y=Youtube.new
+      y.yid = Youtube.get_yid(url)
+      y.state = LINK_STATE_UNPROCESSED
+      y.save
+    end
 
     if Link.exists? url
       Util.log("Duplicated url.")
