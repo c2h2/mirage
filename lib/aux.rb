@@ -1,7 +1,8 @@
 require 'logger'
 require 'digest'
 
-LOG = Logger.new(STDOUT)
+$log = Logger.new(STDOUT)
+
 
 ### AUX classes ###
 class Stopwatch
@@ -60,9 +61,9 @@ class Util
     str="" if str.nil?
     str = Time.now.to_s + "|" + (@@counter+=1).to_s+ "|" + str
     if error_level > 1
-      LOG.warn str
+      $log.warn str
     else
-      LOG.info str
+      $log.info str
     end
   end
 

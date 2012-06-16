@@ -1,5 +1,5 @@
 require 'mongoid'
-Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| puts "Requiring #{file}"; require file }
+Dir[File.dirname(__FILE__) + '/model/*.rb'].each {|file| puts "Requiring #{file}"; require file }
 require_relative 'conf/conf.rb'
 require_relative 'lib/aux.rb'
 require 'yaml'
