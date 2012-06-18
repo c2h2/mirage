@@ -6,7 +6,9 @@ class Youtube
   field :thumb, :type => String
   field :title, :type => String
   field :uploader, :type => String
-  field :info_saved, :tyep => Boolean, :default => false
+  field :info_saved, :type => Boolean, :default => false
+  field :downloaded, :type => Boolean, :default => false
+  field :fn, :type => String
 
   def self.get_yid url
     regex = /youtube.com.*(?:\/|v=)([^&$]+)/

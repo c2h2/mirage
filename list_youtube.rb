@@ -5,5 +5,5 @@ Dir[File.dirname(__FILE__) + '/model/*.rb'].each {|file| puts "Requiring #{file}
 
 ls= Youtube.all
 ls.each do |l|
-  puts l.yid
+  puts "#{l.yid}|#{l.uploader}|#{l.title}"
 end
