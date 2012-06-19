@@ -8,3 +8,4 @@ Analysis youtube video page xpath.
 
 this is single threading crawling and downloading, this is easily expanded into multiple connections and distrubuited. by using e.g. (rabbitmq to communicate with master)
 
+Disclaimer: this is pure ruby expriemental, you should not use it for any commercial use. plz also read GPL file.
