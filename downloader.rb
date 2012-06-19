@@ -15,17 +15,19 @@ loop do
     begin
       url = "http://www.youtube.com/watch?v=#{y.yid}"
       Util.log "Processing #{y.yid}"
-      `cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'`
-      dl_fn = `ls #{DL_DIR}/#{y.yid}*`.strip
-      y.uploader = json["uploader"]
+      cmd = "cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'"
+      Util.log cmd
+      Util.log `#{cmd}`
+      dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
       y.downloaded = true
       y.fn = dl_fn
       y.save
   
       Util.log "#{y.fn}"
-        rescue
+    rescue => e
       #something wrong on extracting info
-      Util.log "Soemthing wrong with extraction."
+
+      Util.log "Soemthing wrong with extraction. #{e}"
     end
   end
   Util.log "Sleeping"
