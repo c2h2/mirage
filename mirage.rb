@@ -110,7 +110,7 @@ class Mirage
     end
     #@page.link = link #might need to fix here as portable won't transfer
     Util.log "DL #{link.url}"
-    hash = {"User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.34 Safari/536.11"} #put UA here
+    hash = {"User-Agent" => UAS.sample} #put UA here
     sw=Stopwatch.new 
     
     begin

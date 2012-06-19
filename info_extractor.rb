@@ -7,8 +7,6 @@ require 'open-uri'
 require 'json'
 require 'pp'
 
-HTTP_PROXY = "http_proxy=http://localhost:1095"
-JSON_DIR = 'json_info'
 loop do 
   ys = Youtube.where(:info_saved => false).limit(10)
   ys.each do |y|

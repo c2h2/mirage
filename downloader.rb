@@ -7,8 +7,6 @@ require 'open-uri'
 require 'json'
 require 'pp'
 
-HTTP_PROXY = "http_proxy=http://localhost:1095"
-DL_DIR = 'dl'
 loop do 
   ys = Youtube.where(:downloaded => false).limit(10)
   ys.each do |y|
