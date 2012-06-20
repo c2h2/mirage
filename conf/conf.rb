@@ -5,7 +5,7 @@ LINK_STATE_PROCESSING  = 2
 LINK_STATE_PROCESSED = 1
 
 
-HTTP_PROXY = "http_proxy=http://localhost:1095"
+HTTP_PROXY = "http_proxy=http://localhost:1077"
 DL_DIR = 'dl'
 JSON_DIR = 'json_info'
 
