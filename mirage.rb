@@ -11,6 +11,8 @@ class Mirage
   
   def initialize
     @cnt = 0
+    @urlmd5s={}
+    pre_warm if PRE_WARM
     run
   end
 
@@ -47,10 +49,33 @@ class Mirage
     Util.hexmd5 url
   end
 
+  def pre_warm
+    Util.log "PRE WARMING"
+    cnt =0
+    Link.all.each do |link|
+      @urlmd5s[get_hash(link.url)]=true
+      cnt +=1
+    end
+    Util.log "#{cnt} loaded into hash urls."
+    
+  end
+
+  def has_url? url
+    md5=get_hash(url)
+    if @urlmd5s[md5].nil?
+      @urlmd5s[md5]=true
+      return false
+    else
+      return true
+    end
+  end
+
   def save_url page, org_url
     #determine if valid
     url = Link.full_url(page.url, org_url)
-    Util.log "Checking #{url}"
+    if has_url? url
+      Util.log("Duplicated url from HASH.")
+    end
     unless valid_url?(url)
       Util.log "Non valid url, #{url}"
       return
@@ -72,9 +97,11 @@ class Mirage
       end
     end
 
-    if Link.exists? url
-      Util.log("Duplicated url.")
-      return
+    unless PRE_WARM
+      if Link.exists? url
+        Util.log("Duplicated url from MONGO.")
+        return
+      end
     end
   
     Util.log "Saved #{url}"
@@ -114,7 +141,7 @@ class Mirage
     sw=Stopwatch.new 
     
     begin
-      Timeout::timeout(5) do
+      Timeout::timeout(15) do
         open(link.url, hash) do |f|
           page.url     = link.url
           page.content = f.read
