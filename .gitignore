@@ -10,3 +10,5 @@
 # Ignore json output.
 json_info
 dl
+conf/proxy.rb
+
