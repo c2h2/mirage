@@ -1,0 +1,22 @@
+<table class="table table-bordered">
+	<tr>
+		<th>Youtube ID</th>
+		<th>Thumb</th>
+		<th>Title</th>
+		<th>Uploader</th>
+		<th>URL</th>
+		<th>Want DL?</th>
+	</tr>
+	
+	<% Youtube.all.each do |y| %>
+	<tr>
+		<td><%= y.yid %></td>
+		<td><%= y.thumb %></td>
+		<td><%= y.title %></td>
+		<td><%= y.uploader %></td>
+		<td><%= y.fn %></td>
+		<td><input type="checkbox"></input></td>
+	</tr>
+	<% end %>
+</table>
+	

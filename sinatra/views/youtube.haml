@@ -1,0 +1,16 @@
+%h1 youtube
+%table
+	%tbody
+		%tr
+			%td Yid
+			%td state
+			%td title
+			%td thumb
+			%td info_saved
+		- Youtube.all.each do |youtube|
+			%tr
+				%td=youtube.yid
+				%td=youtube.state
+				%td=youtube.title	
+				%td=youtube.thumb
+				%td=youtube.info_saved
