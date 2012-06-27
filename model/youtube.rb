@@ -9,6 +9,8 @@ class Youtube
   field :info_saved, :type => Boolean, :default => false
   field :downloaded, :type => Boolean, :default => false
   field :fn, :type => String
+  
+  has_one :page
 
   def self.get_yid url
     regex = /youtube.com.*(?:\/|v=)([^&$]+)/

@@ -90,6 +90,8 @@ class Mirage
       yid = Youtube.get_yid(url)
       unless Youtube.exists?(yid)
         y=Youtube.new
+        y.page = page
+        y.title = page.title
         y.yid = yid
         y.state = LINK_STATE_UNPROCESSED
         y.info_saved = false
@@ -148,6 +150,7 @@ class Mirage
           page.charset = f.charset
           page.mime    = f.content_type
           page.code    = f.status[0].to_i
+          page.link    = link
           f.base_uri
           f.meta
           begin

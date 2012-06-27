@@ -17,7 +17,7 @@ class Page
   field :lm_at, :type => DateTime
   field :exp_at, :type => DateTime
 
-
+  has_one :youtube
   belongs_to :link
   
   def get_port
@@ -40,6 +40,10 @@ class Page
     p.created_at = self.created_at
     p.updated_at = self.updated_at
     p
+  end
+
+  def get_youtube_title
+    @title.strip.split("\n")[0]
   end
 
   def parse_page
