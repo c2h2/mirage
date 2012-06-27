@@ -53,6 +53,7 @@ class Page
     @noko_doc = Nokogiri::HTML(self.content)
     @found_links = @noko_doc.css('a').map{|l| l['href'].to_s}
     Util.log "Found #{@found_links.count} links"
+    self.title = @noko_doc.title
     @found_links
   end
   
