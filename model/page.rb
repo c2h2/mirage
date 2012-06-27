@@ -43,7 +43,7 @@ class Page
   end
 
   def get_youtube_title
-    @title.strip.split("\n")[0]
+    self.title.strip.split("\n")[0]
   end
 
   def parse_page

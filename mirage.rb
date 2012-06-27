@@ -91,7 +91,7 @@ class Mirage
       unless Youtube.exists?(yid)
         y=Youtube.new
         y.page = page
-        y.title = page.title
+        y.title = page.get_youtube_title
         y.yid = yid
         y.state = LINK_STATE_UNPROCESSED
         y.info_saved = false
