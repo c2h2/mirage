@@ -8,7 +8,7 @@
 		<th>Want DL?</th>
 	</tr>
 	
-	<% Youtube.all.each do |y| %>
+	<% Youtube.all.limit(20).each do |y| %>
 	<tr>
 		<td><%= y.yid %></td>
 		<td><%= y.thumb %></td>
@@ -18,5 +18,6 @@
 		<td><input type="checkbox"></input></td>
 	</tr>
 	<% end %>
+
 </table>
 	

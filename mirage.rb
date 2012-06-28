@@ -92,10 +92,13 @@ class Mirage
         y=Youtube.new
         y.page = page
         y.title = page.get_youtube_title
+        Util.log "TITLE: " + y.title
         y.yid = yid
         y.state = LINK_STATE_UNPROCESSED
         y.info_saved = false
         y.save
+        page.youtube = y
+        page.save
       end
     end
 

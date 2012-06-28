@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'sinatra'
+require 'kaminari/sinatra'
 require 'mongoid'
 Dir[File.dirname(__FILE__) + '/../model/*.rb'].each {|file| puts "Requiring #{file}"; require file }
 require_relative '../conf/conf.rb'
