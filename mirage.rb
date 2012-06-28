@@ -27,8 +27,8 @@ class Mirage
     if !page.nil?
       urls = page.parse_page
       
-      if Youtube.valid_video?(page.link.url)
-        yid = Youtube.get_yid(page.link.url)
+      if Youtube.valid_video?(page.url)
+        yid = Youtube.get_yid(page.url)
         title = page.get_youtube_title
         new_youtube(yid, page, title)
       end
