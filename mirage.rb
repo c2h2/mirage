@@ -21,10 +21,26 @@ class Mirage
       process_one_link
     end
   end
+  def process_one_link
+    link = get_a_link
+    #if link is accquired successful
+    unless link.nil?
+      #processing page now
+      page = dl link
+     
+      link.state = LINK_STATE_PROCESSED
+      link.save
+      #if page is dl'ed successful
+      process_one_page page, link.url
+    else
+      Util.log "no more job, sleep for a while"
+      sleep 0.01
+    end
+  end
   
   def process_one_page page, org_link
-    Util.log "Getting a page #{page}"
-    if !page.nil?
+    Util.log "Getting a page #{page.url}"
+    if !page.url.nil?
       urls = page.parse_page
       
       if Youtube.valid_video?(page.url)
@@ -83,14 +99,14 @@ class Mirage
   end
 
   def new_youtube yid, page=nil, title=nil
+    Util.log "NEW YOUTUBE #{yid}"
     if Youtube.exists?(yid)
+      y=Youtube.where(:yid => yid).first
       if page.nil? and title.nil?
          #nothing to do
       else
-        y=Youtube.where(:yid => yid).first
         y.page = page unless page.nil?
         y.title = title unless title.nil?
-        y.save
       end
     else
       y = Youtube.new
@@ -101,9 +117,10 @@ class Mirage
       unless title.nil?
         y.title = title
       end
-      y.state = LINK_STATE_UNPROCESSED
-      y.info_saved = false
     end
+    y.state = LINK_STATE_UNPROCESSED
+    y.info_saved = false
+    y.save
   end
 
   def save_url page, org_url
@@ -142,22 +159,6 @@ class Mirage
     l.save
   end
 
-  def process_one_link
-    link = get_a_link
-    #if link is accquired successful
-    unless link.nil?
-      link.state = LINK_STATE_PROCESSED
-      link.save
-      #processing page now
-      page = dl link
-      #if page is dl'ed successful
-      process_one_page page, link.url
-    else
-      Util.log "no more job, sleep for a while"
-      sleep 0.01
-    end
-  end
-
   def dl link, remain_times = 2
     return unless link.is_a? Link
     page = Page.new
@@ -166,7 +167,7 @@ class Mirage
       Util.log "Error in DL #{link.url} really failed after #{3} times"
       return 
     end
-    #@page.link = link #might need to fix here as portable won't transfer
+    page.link = link
     Util.log "DL #{link.url}"
     hash = {"User-Agent" => UAS.sample} #put UA here
     sw=Stopwatch.new 
@@ -205,6 +206,7 @@ class Mirage
       Util.log "Error in dl|#{link.url}|RETRYING#{remain_times - 1}|#{e}"
       dl(link, remain_times - 1)
     end
+    page.save
     page
   end
 

@@ -1,3 +1,4 @@
+<p><%= Youtube.all.count %></p>
 <table class="table table-bordered">
 	<tr>
 		<th>Youtube ID</th>
@@ -8,7 +9,7 @@
 		<th>Want DL?</th>
 	</tr>
 	
-	<% Youtube.all.limit(20).each do |y| %>
+	<% Youtube.where(:state => 0).desc("title").limit(2000).each do |y| %>
 	<tr>
 		<td><%= y.yid %></td>
 		<td><%= y.thumb %></td>
