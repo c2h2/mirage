@@ -26,11 +26,23 @@ class Mirage
     Util.log "Getting a page #{page}"
     if !page.nil?
       urls = page.parse_page
-      return if urls.nil?
-      urls.each do |url|
-        save_url page, url
+      
+      if Youtube.valid_video?(page.link.url)
+        yid = Youtube.get_yid(page.link.url)
+        title = page.get_youtube_title
+        new_youtube(yid, page, title)
       end
+    
+      if urls.nil?
+        #do nothing, since no page.
+      else
+        urls.each do |url|
+          save_url page, url
+        end
+      end
+      
       begin
+        page.state = PAGE_STATE_PROCESSED
         page.save
       rescue
         #save utf-8 invliad problems.
@@ -70,6 +82,30 @@ class Mirage
     end
   end
 
+  def new_youtube yid, page=nil, title=nil
+    if Youtube.exists?(yid)
+      if page.nil? and title.nil?
+         #nothing to do
+      else
+        y=Youtube.where(:yid => yid).first
+        y.page = page unless page.nil?
+        y.title = title unless title.nil?
+        y.save
+      end
+    else
+      y = Youtube.new
+      y.yid = yid
+      unless page.nil?
+        y.page = page
+      end
+      unless title.nil?
+        y.title = title
+      end
+      y.state = LINK_STATE_UNPROCESSED
+      y.info_saved = false
+    end
+  end
+
   def save_url page, org_url
     #determine if valid
     url = Link.full_url(page.url, org_url)
@@ -88,18 +124,7 @@ class Mirage
 
     if Youtube.valid_video?(url)
       yid = Youtube.get_yid(url)
-      unless Youtube.exists?(yid)
-        y=Youtube.new
-        y.page = page
-        y.title = page.get_youtube_title
-        Util.log "TITLE: " + y.title
-        y.yid = yid
-        y.state = LINK_STATE_UNPROCESSED
-        y.info_saved = false
-        y.save
-        page.youtube = y
-        page.save
-      end
+      new_youtube(yid)
     end
 
     unless PRE_WARM
@@ -136,6 +161,7 @@ class Mirage
   def dl link, remain_times = 2
     return unless link.is_a? Link
     page = Page.new
+    page.state = PAGE_STATE_UNPROCESSED
     if remain_times <= 0
       Util.log "Error in DL #{link.url} really failed after #{3} times"
       return 
