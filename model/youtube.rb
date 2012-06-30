@@ -13,6 +13,8 @@ class Youtube
   
   has_one :page
 
+  index({:yid}, {unique: true})
+
   def self.get_yid url
     regex = /youtube.com.*(?:\/|v=)([^&$]+)/
     res = url.match(regex)
