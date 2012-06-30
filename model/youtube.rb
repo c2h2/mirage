@@ -8,6 +8,7 @@ class Youtube
   field :uploader, :type => String
   field :info_saved, :type => Boolean, :default => false
   field :downloaded, :type => Boolean, :default => false
+  field :if_download, :type => Boolean, :default => false
   field :fn, :type => String
   
   has_one :page

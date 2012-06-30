@@ -56,3 +56,19 @@ end
 get '/youtube' do
   erb :youtube
 end
+
+get '/ajax/:request/:value' do
+  params[:request] + " " +params[:value]
+  y=Youtube.where(:yid => params[:request].strip).limit(1).first
+  if params[:value] == "true"
+    y.if_download = true
+    y.save
+
+  end
+
+  if params[:value] == "false"
+    y.if_download = false
+    y.save
+
+  end
+end
