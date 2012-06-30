@@ -58,17 +58,6 @@ get '/youtube' do
 end
 
 get '/ajax/:request/:value' do
-  params[:request] + " " +params[:value]
-  y=Youtube.where(:yid => params[:request].strip).limit(1).first
-  if params[:value] == "true"
-    y.if_download = true
-    y.save
-
-  end
-
-  if params[:value] == "false"
-    y.if_download = false
-    y.save
-
-  end
+  y=Youtube.where(:yid => params[:request].strip).update(if_download: params[:value] == "true")
+  params[:request].to_s + " set to #{params[:value]} is done." 
 end
