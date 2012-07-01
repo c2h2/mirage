@@ -48,7 +48,13 @@ class Page
 
   def get_youtube_uploader
     load_noko
-    @noko_doc.css('#watch-uploader-info a').first.content
+    uploader = "nil"
+    begin
+      uploader = @noko_doc.css('#watch-uploader-info a').first.content
+    rescue
+      uploader ="ERROR"
+    end
+    uploader
   end
   
   def load_noko
