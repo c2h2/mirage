@@ -32,14 +32,14 @@ class Mirage
       begin
         page = dl link
      
-        link.state = LINK_STATE_PROCESSED
-        link.save
         #if page is dl'ed successful
         process_one_page page, link.url
       rescue => e
         #uncessful dl or charset issue
         Util.log(e.to_s, 10)
       end
+      link.state = LINK_STATE_PROCESSED
+      link.save
     else
       Util.log "no more job, sleep for a while"
       sleep 0.01
@@ -238,7 +238,7 @@ class MirageWorker
         begin
           url = "http://www.youtube.com/watch?v=#{y.yid}"
           Util.log "Processing #{y.yid}"
-          cmd = "cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'"
+          cmd = "cd #{DL_DIR} && #{HTTP_PROXY} #{"../" * DL_DIR.split("/").count}youtube-dl/youtube-dl -t '#{url}'"
           Util.log cmd
           system cmd
           dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
