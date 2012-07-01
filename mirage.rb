@@ -242,9 +242,9 @@ class MirageWorker
           Util.log "Soemthing wrong with extraction. #{e}"
         end
       end
+      Util.log "Sleeping"
+      sleep 1
     end
-    Util.log "Sleeping"
-    sleep 1
   end
 
 
