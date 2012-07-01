@@ -299,6 +299,7 @@ def start
     Page.destroy_all
     l=Link.new
     l.url = ARGV[1].nil? ? 'http://www.youtube.com/watch?v=AgJcn4VKtp0&feature=g-all-u' : ARGV[1]
+    puts l.url
     l.state = LINK_STATE_UNPROCESSED
     l.save
   elsif ARGV[0]=="list"
