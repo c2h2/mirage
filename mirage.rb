@@ -29,12 +29,17 @@ class Mirage
     #if link is accquired successful
     unless link.nil?
       #processing page now
-      page = dl link
+      begin
+        page = dl link
      
-      link.state = LINK_STATE_PROCESSED
-      link.save
-      #if page is dl'ed successful
-      process_one_page page, link.url
+        link.state = LINK_STATE_PROCESSED
+        link.save
+        #if page is dl'ed successful
+        process_one_page page, link.url
+      rescue => e
+        #uncessful dl or charset issue
+        Util.log(e.to_s, 10)
+      end
     else
       Util.log "no more job, sleep for a while"
       sleep 0.01
