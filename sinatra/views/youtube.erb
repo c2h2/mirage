@@ -34,7 +34,7 @@
 		  <th>SHA1</th>
 	  </tr>
   </thead>
-	<% Youtube.where(:state => 0).desc("title").limit(200).each_with_index do |y,i| %>
+	<% Youtube.where(:state => 0).desc("title").limit(500).each_with_index do |y,i| %>
 	<tbody>
     <tr>
 		  <td><%= y.yid %></td>
@@ -42,8 +42,8 @@
       <td><img src="http://i3.ytimg.com/vi/<%= y.yid%>/default.jpg" /></td>
   		<td><%= y.title %></td>
 	  	<td><%= y.uploader %></td>
-		  <td><%= y.fn.nil? ? "" : "<a href=\"#\" class=\"tool\" rel=\"tooltip\" title=\"#{y.fn}\">GET ME</a>" %></td>
-  		<td><input type="checkbox" id="<%= y.yid %>" <%= y.if_download ? "checked" : "" %>></input></td>
+		  <td><%= y.fn.nil? ? "" : "<a href=\"/dl/#{y.fn.split('/').last}\" class=\"tool\" rel=\"tooltip\" title=\"#{y.fn.split('/').last}\" target=\"_blank\">GET_ME</a>" %></td>
+  		<td><input type="checkbox" id="<%= y.yid %>" <%= y.if_download ? "disabled=\"disabled\" checked=\"checked\"" : "nothing=\"a\"" %>></input></td>
 	  	<td><%= y.sha1 %></td>
   	</tr>
   </tbody>
