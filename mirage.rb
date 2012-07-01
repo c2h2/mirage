@@ -49,7 +49,8 @@ class Mirage
       if Youtube.valid_video?(page.url)
         yid = Youtube.get_yid(page.url)
         title = page.get_youtube_title
-        new_youtube(yid, page, title)
+        uploader = page.get_youtube_uploader
+        new_youtube(yid, page, title, uploader)
       end
     
       if urls.nil?
@@ -101,7 +102,7 @@ class Mirage
     end
   end
 
-  def new_youtube yid, page=nil, title=nil
+  def new_youtube yid, page=nil, title=nil, uploader=nil
     Util.log "NEW YOUTUBE #{yid}"
     if Youtube.exists?(yid)
       y=Youtube.where(:yid => yid).first
@@ -110,6 +111,7 @@ class Mirage
       else
         y.page = page unless page.nil?
         y.title = title unless title.nil?
+        y.uploader = uploader unless uploader.nil?
       end
     else
       y = Youtube.new
@@ -119,6 +121,9 @@ class Mirage
       end
       unless title.nil?
         y.title = title
+      end
+      unless uploader.nil?
+        y.uploader=uploader
       end
     end
     y.state = LINK_STATE_UNPROCESSED

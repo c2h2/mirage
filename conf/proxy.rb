@@ -1,1 +1,1 @@
-HTTP_PROXY = "" #"http_proxy=http://localhost:1077"       
+HTTP_PROXY = "http_proxy=http://localhost:1095"       

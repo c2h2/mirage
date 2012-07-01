@@ -25,6 +25,11 @@ class Youtube
     res[1]
   end
 
+  def self.get_uploader
+    noko = Nokogiri::HTML(self.page.content)
+    noko.css('#watch-uploader-info a').first.content
+  end
+
   def self.exists? yid
     self.where(:yid => yid).limit(1).length >= 1 
   end

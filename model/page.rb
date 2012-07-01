@@ -46,11 +46,20 @@ class Page
     self.title.strip.split("\n")[0]
   end
 
+  def get_youtube_uploader
+    load_noko
+    @noko_doc.css('#watch-uploader-info a').first.content
+  end
+  
+  def load_noko
+    @noko_doc ||= Nokogiri::HTML(self.content)
+  end
+
   def parse_page
     if self.content.nil?
       return nil
     end
-    @noko_doc = Nokogiri::HTML(self.content)
+    load_noko
     @found_links = @noko_doc.css('a').map{|l| l['href'].to_s}
     Util.log "Found #{@found_links.count} links"
     self.title = @noko_doc.title
