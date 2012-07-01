@@ -218,59 +218,60 @@ class Mirage
   end
 end
 
-def downloader
-  loop do
-    ys = Youtube.where(:downloaded => false).limit(10)
-    ys.each do |y|
-      begin
-        url = "http://www.youtube.com/watch?v=#{y.yid}"
-        Util.log "Processing #{y.yid}"
-        cmd = "cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'"
-        Util.log cmd
-        Util.log `#{cmd}`
-        dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
-        y.downloaded = true
-        y.fn = dl_fn
-        y.save
-
-        Util.log "#{y.fn}"
-      rescue => e
-        #something wrong on extracting info
-        Util.log "Soemthing wrong with extraction. #{e}"
+class MirageWorker
+  def self.downloader
+    loop do
+      ys = Youtube.where(:downloaded => false).limit(10)
+      ys.each do |y|
+        begin
+          url = "http://www.youtube.com/watch?v=#{y.yid}"
+          Util.log "Processing #{y.yid}"
+          cmd = "cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'"
+          Util.log cmd
+          Util.log `#{cmd}`
+          dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
+          y.downloaded = true
+          y.fn = dl_fn
+          y.save
+  
+          Util.log "#{y.fn}"
+        rescue => e
+          #something wrong on extracting info
+          Util.log "Soemthing wrong with extraction. #{e}"
+        end
       end
     end
+    Util.log "Sleeping"
+    sleep 5
   end
-  Util.log "Sleeping"
-  sleep 5
-end
 
 
-def info_extract
+  def self.info_extract
+    loop do
+      ys = Youtube.where(:info_saved => false).limit(10)
+      ys.each do |y|
+        begin
+          url = "http://www.youtube.com/watch?v=#{y.yid}"
+          Util.log "Processing #{y.yid}"
+          `cd #{JSON_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl --skip-download --write-info-json  '#{url}'`
+          json_fn = `ls #{JSON_DIR}/#{y.yid}*`.strip
+          json = JSON.parse File.read(json_fn)
+          y.thumb = json["thumbnail"]
+          y.title = json["title"]
+          y.uploader = json["uploader"]
+          y.info_saved = true
+          y.save
 
-  loop do
-    ys = Youtube.where(:info_saved => false).limit(10)
-    ys.each do |y|
-      begin
-        url = "http://www.youtube.com/watch?v=#{y.yid}"
-        Util.log "Processing #{y.yid}"
-        `cd #{JSON_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl --skip-download --write-info-json  '#{url}'`
-        json_fn = `ls #{JSON_DIR}/#{y.yid}*`.strip
-        json = JSON.parse File.read(json_fn)
-        y.thumb = json["thumbnail"]
-        y.title = json["title"]
-        y.uploader = json["uploader"]
-        y.info_saved = true
-        y.save
-
-        Util.log "#{y.uploader}|#{y.title}|#{y.thumb}"
-      rescue
-        #something wrong on extracting info
-        Util.log "Soemthing wrong with extraction."
+          Util.log "#{y.uploader}|#{y.title}|#{y.thumb}"
+        rescue
+          #something wrong on extracting info
+          Util.log "Soemthing wrong with extraction."
+        end
       end
     end
+    Util.log "Sleeping"
+    sleep 5
   end
-  Util.log "Sleeping"
-  sleep 5
 end
 
 
@@ -303,9 +304,9 @@ def start
     puts "Links:" + Link.count.to_s
     puts "Pages:" + Page.count.to_s
   elsif ARGV[0]=="extract"
-    info_extract()
+    MirageWorker.info_extract
   elsif ARGV[0]=="dl"
-    downloader    
+    MirageWorker.downloader    
   end
 end
 
