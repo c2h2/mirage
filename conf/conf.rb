@@ -9,7 +9,7 @@ PAGE_STATE_UNPROCESSED = 0
 PAGE_STATE_PROCESSED = 10
 
 
-DL_DIR = 'dl'
+DL_DIR = 'sinatra/static/dl'
 JSON_DIR = 'json_info'
 
 UAS=["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.34 Safari/536.11"]
