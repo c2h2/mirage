@@ -234,6 +234,7 @@ class MirageWorker
           dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
           y.downloaded = true
           y.fn = dl_fn
+          y.sha1 = `sha1sum #{dl_fn}`.strip.split(" ")[0]
           y.save
   
           Util.log "#{y.fn}"

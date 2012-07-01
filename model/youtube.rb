@@ -10,6 +10,7 @@ class Youtube
   field :downloaded, :type => Boolean, :default => false
   field :if_download, :type => Boolean, :default => false
   field :fn, :type => String
+  field :sha1, :type => String
   
   has_one :page
 
