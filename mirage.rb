@@ -123,6 +123,8 @@ class Mirage
     end
     y.state = LINK_STATE_UNPROCESSED
     y.info_saved = false
+    y.downloaded = false
+    y.if_download = false
     y.save
   end
 
@@ -221,14 +223,14 @@ end
 class MirageWorker
   def self.downloader
     loop do
-      ys = Youtube.where(:downloaded => false).limit(10)
+      ys = Youtube.where(:if_download => true, :downloaded => false).limit(1)
       ys.each do |y|
         begin
           url = "http://www.youtube.com/watch?v=#{y.yid}"
           Util.log "Processing #{y.yid}"
           cmd = "cd #{DL_DIR} && #{HTTP_PROXY} ../youtube-dl/youtube-dl -t '#{url}'"
           Util.log cmd
-          Util.log `#{cmd}`
+          system cmd
           dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
           y.downloaded = true
           y.fn = dl_fn
@@ -242,7 +244,7 @@ class MirageWorker
       end
     end
     Util.log "Sleeping"
-    sleep 5
+    sleep 1
   end
 
 
