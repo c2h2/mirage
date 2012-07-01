@@ -14,11 +14,13 @@ USAGE
 GET IT ROLLING
 ==============
 first time:
+
     bundle install
     ruby mirage.rb seed
     edit conf/proxy.rb
     
 Later, use 3 console to run:
+
     ruby mirage.rb run
     ruby mirage.rb dl
     cd sinatra && ruby app.rb
