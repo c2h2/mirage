@@ -294,7 +294,7 @@ def start
   elsif ARGV[0]=="run"
     m=Mirage.new
   elsif ARGV[0]=="seed"
-    Youutube.destroy_all
+    Youtube.destroy_all
     Link.destroy_all
     Page.destroy_all
     l=Link.new
