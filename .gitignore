@@ -12,3 +12,4 @@ json_info
 dl
 conf/proxy.rb
 *.log
+*.html
