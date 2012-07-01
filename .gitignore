@@ -9,7 +9,7 @@
 
 # Ignore json output.
 json_info
-dl
+sinatra/static/dl
 conf/proxy.rb
 *.log
 *.html

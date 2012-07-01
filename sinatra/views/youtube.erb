@@ -1,4 +1,4 @@
-<p><%= Youtube.all.count %></p>
+<p><b>Youtubes:</b> <%= Youtube.count %>, <b>Links:</b> <%= Link.count %>, <b>Page:</b> <%= Page.count %></p>
 
 <script type="text/javascript">
   $(document).ready(function(){
@@ -20,31 +20,32 @@
       });
     });
   });
-
+  $('.tool').tooltip({placement: $(this).attr('title'), trigger: 'manual'}).tooltip('show')
 </script>
-	
-
-<table class="table table-bordered">
-	<tr>
-		<th>Youtube ID</th>
-		<th>Thumb</th>
-		<th>Title</th>
-		<th>Uploader</th>
-		<th>URL</th>
-		<th>DL?</th>
-		<th>SHA1</th>
-	</tr>
-	
+<table class="table table-bordered table-striped">
+	<thead>
+    <tr>
+		  <th>Youtube ID</th>
+	  	<th>Thumb</th>
+  		<th>Title</th>
+		  <th>Uploader</th>
+	  	<th>URL</th>
+  		<th>DL?</th>
+		  <th>SHA1</th>
+	  </tr>
+  </thead>
 	<% Youtube.where(:state => 0).desc("title").limit(200).each_with_index do |y,i| %>
-	<tr>
-		<td><%= y.yid %></td>
-		<td><%= y.thumb %></td>
-		<td><%= y.title %></td>
-		<td><%= y.uploader %></td>
-		<td><%= y.fn %></td>
-		<td><input type="checkbox" id="<%= y.yid %>" <%= y.if_download ? "checked" : "" %>></input></td>
-		<td><%= y.sha1 %></td>
-	</tr>
+	<tbody>
+    <tr>
+		  <td><%= y.yid %></td>
+  		<!--<td><%= y.thumb %></td>-->
+      <td><img src="http://i3.ytimg.com/vi/<%= y.yid%>/default.jpg" /></td>
+  		<td><%= y.title %></td>
+	  	<td><%= y.uploader %></td>
+		  <td><%= y.fn.nil? ? "" : "<a href=\"#\" class=\"tool\" rel=\"tooltip\" title=\"#{y.fn}\">GET ME</a>" %></td>
+  		<td><input type="checkbox" id="<%= y.yid %>" <%= y.if_download ? "checked" : "" %>></input></td>
+	  	<td><%= y.sha1 %></td>
+  	</tr>
+  </tbody>
 	<% end %>
-
 </table>
