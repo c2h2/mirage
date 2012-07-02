@@ -1,7 +1,7 @@
 Crawling youtube video page, extract info and downloader.
 ==========================================================
 
-* mirage.rb = crawl and analysis unprocessed youtube url
+Mirage is a process to crawl, search, extraction and downloader for youtube videos.
 
 USAGE
 =====
