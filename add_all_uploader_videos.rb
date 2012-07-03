@@ -1,58 +1,27 @@
 require 'youtube_it'
-require 'pp'
 require_relative 'conf/dev_key.rb'
+require 'mongoid'
+Dir[File.dirname(__FILE__) + '/model/*.rb'].each {|file| puts "Requiring #{file}"; require file }
+require_relative 'conf/conf.rb'
+require_relative 'lib/aux.rb'
+require_relative 'conf/db.rb'
+require 'pp'
 
 
-class Util
-  def self.log str
-    puts str
-  end
-end
-
-class Youtube
-  def initialize
-    @client = YouTubeIt::Client.new(:dev_key => DEV_KEY)
-    @per_page = 50 # this seems to be maxium
-  end
-
-
-  def query_uploader user, page=0
-    @client.videos_by(:user => user, :per_page => @per_page, :page => page)
-
-  end
-
-  def uploader_all_videos user
-    results = []
-    videos = []
-    results[0] = query_uploader(user)
-    total_videos = results[0].total_result_count
-    if total_videos > @per_page
-      total_pages = total_videos / @per_page
-      total_pages.times do |i|
-        Util.log "next page #{i}"
-        next if i==0 # we have already got results for page 0
-        results[i]=self.query_uploader(user, i)
-      end
-
-    else
-      #sucks not many pages
-    end
-
-    results.each do |res|
-      videos << res.videos
-    end
-    videos.flatten
-  end
-end
-
-yt=Youtube.new
-#res = yt.query_uploader 'HuskyStarcraft', 0
-#pp res
-#videos = yt.uploader_all_videos "HuskyStarcraft"
-videos = yt.uploader_all_videos "GoogleDevelopers"
+yt=You2.new
+videos = yt.uploader_all_videos ARGV[0]
 videos.each do |v|
-  puts "#{v.author.name}|#{v.title}|#{v.unique_id}"
-
+  Util.log "#{v.author.name}|#{v.title}|#{v.unique_id}"
+  unless Youtube.exists?(v.unique_id)
+    Util.log "Adding youtube video"
+    y=Youtube.new
+    y.yid = v.unique_id
+    y.title = v.title
+    y.uploader= v.author.name
+    y.if_download = true
+    y.downloaded = false
+    y.save
+  end
 end
 
 

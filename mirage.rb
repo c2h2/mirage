@@ -1,14 +1,15 @@
 require 'mongoid'
 Dir[File.dirname(__FILE__) + '/model/*.rb'].each {|file| puts "Requiring #{file}"; require file }
-require_relative 'conf/conf.rb'
+Dir[File.dirname(__FILE__) + '/conf/*.rb'].each {|file| puts "Requiring #{file}"; require file }
+#require_relative 'conf/conf.rb'
 require_relative 'lib/aux.rb'
-require_relative 'conf/db.rb'
+#require_relative 'conf/db.rb'
 require 'yaml'
 require 'open-uri'
 require 'nokogiri'
 require 'json'
 require 'pp'
-
+require 'youtube_it'
 
 class Mirage
   
@@ -36,6 +37,7 @@ class Mirage
         process_one_page page, link.url
       rescue => e
         #uncessful dl or charset issue
+        puts e.backtrace
         Util.log(e.to_s, 10)
       end
       link.state = LINK_STATE_PROCESSED
