@@ -1,6 +1,6 @@
 require 'youtube_it'
 require 'pp'
-require_relative '../conf/dev_key.rb'
+require_relative 'conf/dev_key.rb'
 
 
 class Util
