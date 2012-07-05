@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -n $2]; then
+if [ -z $2 ]; then
   echo "Missing remote dir name."
   exit 1
 fi
