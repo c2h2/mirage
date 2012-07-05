@@ -266,7 +266,7 @@ class MirageWorker
         Util.log "Processing #{y.yid} REMOTELY at #{REMOTE_HOST}"
         exec_cmd("remote/invoke_remote_dl.sh #{REMOTE_HOST} #{y.yid}")
         exec_cmd("remote/get_remote_dl.sh #{REMOTE_HOST} #{y.yid} #{DL_DIR}")
-        exec_cmd("remote/delete_remote_dl #{REMOTE_HOST} #{y.yid}")
+        exec_cmd("remote/delete_remote_dl.sh #{REMOTE_HOST} #{y.yid}")
       else
         Util.log "Processing #{y.yid}"
         cmd = "mkdir -p #{DL_DIR}/#{y.yid} && cd #{DL_DIR}/#{y.yid} && #{HTTP_PROXY} ../../../../youtube-dl/youtube-dl -t '#{url}'"
