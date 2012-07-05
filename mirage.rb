@@ -236,12 +236,12 @@ class MirageWorker
   def self.exec_cmd str
     res         = false
     retry_times =2
-    retry_times.downto(0).do |i|
+    retry_times.downto(0){|i|
       res = system(str)
       if res
         return true #scuess
       end
-    end
+    }
     false #failed
   end
 
@@ -268,7 +268,7 @@ class MirageWorker
         exec_cmd("remote/delete_remote_dl #{REMOTE_HOST} #{y.id}")
       else
         Util.log "Processing #{y.yid}"
-        cmd = "mkdir -p #{DL_DIR}/#{y.yid} && cd #{DL_DIR}/#{y.yid} && #{HTTP_PROXY} #{"../" * DL_DIR.split("/").count}youtube-dl/youtube-dl -t '#{url}'"
+        cmd = "mkdir -p #{DL_DIR}/#{y.yid} && cd #{DL_DIR}/#{y.yid} && #{HTTP_PROXY} ../../../../youtube-dl/youtube-dl -t '#{url}'"
         Util.log cmd
         exec_cmd(cmd) # do the local dl here
       end
@@ -291,8 +291,7 @@ class MirageWorker
     Util.log "Sleeping"
     sleep 1
   end
-end
-=begin
+
   def self.info_extract
     loop do
       ys = Youtube.where(:info_saved => false).limit(10)
@@ -320,7 +319,6 @@ end
     sleep 5
   end
 end
-=end
 
 def usage
   usage ="==USAGE==\n"
