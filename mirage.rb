@@ -233,34 +233,66 @@ class Mirage
 end
 
 class MirageWorker
-  def self.downloader
-    loop do
-      ys = Youtube.where(:if_download => true, :downloaded => false).limit(1)
-      ys.each do |y|
-        begin
-          url = "http://www.youtube.com/watch?v=#{y.yid}"
-          Util.log "Processing #{y.yid}"
-          cmd = "cd #{DL_DIR} && #{HTTP_PROXY} #{"../" * DL_DIR.split("/").count}youtube-dl/youtube-dl -t '#{url}'"
-          Util.log cmd
-          system cmd
-          dl_fn = `ls #{DL_DIR}/*#{y.yid}*`.strip
-          y.downloaded = true
-          y.fn = dl_fn
-          y.sha1 = `sha1sum #{dl_fn}`.strip.split(" ")[0]
-          y.save
-  
-          Util.log "#{y.fn}"
-        rescue => e
-          #something wrong on extracting info
-          Util.log "Soemthing wrong with extraction. #{e}"
-        end
+  def self.exec_cmd str
+    res         = false
+    retry_times =2
+    retry_times.downto(0).do |i|
+      res = system(str)
+      if res
+        return true #scuess
       end
-      Util.log "Sleeping"
-      sleep 1
+    end
+    false #failed
+  end
+
+  def self.downloader remote_dl=false
+    loop do
+      do_one_dl remote_dl
     end
   end
 
+  def self.do_one_dl remote_dl=false
+    ys = Youtube.where(:if_download => true, :downloaded => false).limit(1)
+    if ys.count == 0
+      Util.log "No Job, Sleeping 1"
+      sleep 1
+      return
+    end
+    y = ys[0]
+    begin
+      url = "http://www.youtube.com/watch?v=#{y.yid}"
+      if remote_dl
+        Util.log "Processing #{y.yid} REMOTELY at #{REMOTE_HOST}"
+        exec_cmd("remote/invoke_remote_dl.sh #{REMOTE_HOST} #{y.yid}")
+        exec_cmd("remote/get_remote_dl.sh #{REMOTE_HOST} #{y.id} #{DL_DIR}")
+        exec_cmd("remote/delete_remote_dl #{REMOTE_HOST} #{y.id}")
+      else
+        Util.log "Processing #{y.yid}"
+        cmd = "mkdir -p #{DL_DIR}/#{y.yid} && cd #{DL_DIR}/#{y.yid} && #{HTTP_PROXY} #{"../" * DL_DIR.split("/").count}youtube-dl/youtube-dl -t '#{url}'"
+        Util.log cmd
+        exec_cmd(cmd) # do the local dl here
+      end
 
+      y.downloaded = true
+      dl_fn = `ls #{DL_DIR}/#{y.yid}/*#{y.yid}.*`.strip
+
+      unless dl_fn.nil?
+        y.fn = dl_fn
+        y.sha1 = `sha1sum #{dl_fn}`.strip.split(" ")[0]
+      end
+
+      y.save
+  
+      Util.log y.fn
+    rescue => e
+      #something wrong on extracting info
+      Util.log "Soemthing wrong with extraction. #{e}"
+    end
+    Util.log "Sleeping"
+    sleep 1
+  end
+end
+=begin
   def self.info_extract
     loop do
       ys = Youtube.where(:info_saved => false).limit(10)
@@ -288,8 +320,7 @@ class MirageWorker
     sleep 5
   end
 end
-
-
+=end
 
 def usage
   usage ="==USAGE==\n"
@@ -299,6 +330,7 @@ def usage
   usage += "ruby mirage.rb list = list all the counts (youtubes, links, pages)\n"
   usage += "ruby mirage.rb extract = using youtube-dl to extract all the info\n"
   usage += "ruby mirage.rb dl = using youtube-dl to dl videos\n"
+  usage += "ruby mirage.rb dl = using remote host youtube-dl to dl videos, and transfer back to host\n"
 end
 
 def start
@@ -323,7 +355,10 @@ def start
     MirageWorker.info_extract
   elsif ARGV[0]=="dl"
     MirageWorker.downloader    
+  elsif ARGV[0]=="rdl"
+    MirageWorker.downloader(true)
   end
+
 end
 
 
