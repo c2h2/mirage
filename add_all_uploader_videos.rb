@@ -23,5 +23,3 @@ videos.each do |v|
     y.save
   end
 end
-
-

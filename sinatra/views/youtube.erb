@@ -34,7 +34,7 @@
 		  <th>SHA1</th>
 	  </tr>
   </thead>
-	<% Youtube.where(:state => 0).desc("title").limit(500).each_with_index do |y,i| %>
+	<% Youtube.all.desc("title").limit(500).each_with_index do |y,i| %>
 	<tbody>
     <tr>
 		  <td><%= y.yid %></td>

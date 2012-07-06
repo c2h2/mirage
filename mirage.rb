@@ -284,7 +284,8 @@ class MirageWorker
       end
 
       y.downloaded = true
-      dl_fn = `ls #{DL_DIR}/#{y.yid}/*#{y.yid}.*`.strip
+      dl_fn =  DL_DIR + "/" + y.yid + "/" + `ls #{DL_DIR}/#{y.yid}/*#{y.yid}.*`.strip
+
 
       unless dl_fn.nil?
         y.fn = dl_fn
