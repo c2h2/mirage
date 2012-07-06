@@ -260,13 +260,22 @@ class MirageWorker
       return
     end
     y = ys[0]
+
+    # can handle - 
+    if y.yid =~ /-/
+      Util.log "SKIP #{y.yid}"
+      y.downloaded = true
+      y.save
+      return
+    end
+
     begin
       url = "http://www.youtube.com/watch?v=#{y.yid}"
       if remote_dl
         Util.log "Processing #{y.yid} REMOTELY at #{REMOTE_HOST}"
-        exec_cmd("remote/invoke_remote_dl.sh #{REMOTE_HOST} #{y.yid}")
-        exec_cmd("remote/get_remote_dl.sh #{REMOTE_HOST} #{y.yid} #{DL_DIR}")
-        exec_cmd("remote/delete_remote_dl.sh #{REMOTE_HOST} #{y.yid}")
+        exec_cmd("remote/invoke_remote_dl.sh #{REMOTE_HOST} '#{y.yid}'")
+        exec_cmd("remote/get_remote_dl.sh #{REMOTE_HOST} '#{y.yid}' #{DL_DIR}")
+        exec_cmd("remote/delete_remote_dl.sh #{REMOTE_HOST} '#{y.yid}'")
       else
         Util.log "Processing #{y.yid}"
         cmd = "mkdir -p #{DL_DIR}/#{y.yid} && cd #{DL_DIR}/#{y.yid} && #{HTTP_PROXY} ../../../../youtube-dl/youtube-dl -t '#{url}'"
@@ -329,7 +338,7 @@ def usage
   usage += "ruby mirage.rb list = list all the counts (youtubes, links, pages)\n"
   usage += "ruby mirage.rb extract = using youtube-dl to extract all the info\n"
   usage += "ruby mirage.rb dl = using youtube-dl to dl videos\n"
-  usage += "ruby mirage.rb dl = using remote host youtube-dl to dl videos, and transfer back to host\n"
+  usage += "ruby mirage.rb rdl = using remote host youtube-dl to dl videos, and transfer back to host\n"
 end
 
 def start
