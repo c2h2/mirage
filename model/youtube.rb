@@ -44,12 +44,13 @@ end
 class You2
 
   def initialize
-    @client = YouTubeIt::Client.new(:dev_key => DEV_KEY)
+    @client = YouTubeIt::Client.new #(:dev_key => DEV_KEY)
     @per_page = 50 # this seems to be maxium
   end
 
   def query_uploader user, page=0
-    @client.videos_by(:user => user, :per_page => @per_page, :page => page)
+    res = @client.videos_by(:user => user, :per_page => @per_page, :page => page)
+    res
   end
 
   def uploader_all_videos user
