@@ -53,6 +53,33 @@ class You2
     res
   end
 
+  def query_name query, page=0
+    @client.videos_by(:query => query, :per_page => @per_page, :page)
+  end
+
+  def add_videos_by_name query, amount=100
+    results = []
+    videos = []
+    results[0] = query_name(query)
+    if amount > @per_page
+      total_pages = amount / @per_page
+      total_pages.times do |i|
+        Util.log "next page #{i}"
+        next if i==0 # we have already got results for page 0
+        results[i]=self.query_name(query, i)
+      end
+
+    else
+      #sucks not many pages
+    end
+
+    results.each do |res|
+      videos << res.videos
+    end
+    videos.flatten
+
+  end
+
   def uploader_all_videos user
     results = []
     videos = []
